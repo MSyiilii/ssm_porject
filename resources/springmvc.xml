@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop.xsd
+http://www.springframework.org/schema/mvc
+http://www.springframework.org/schema/mvc/spring-mvc.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd">
+    <!-- 配置spring创建容器时要扫描的包 -->
+<!--    <context:component-scan base-package="cn.msy">-->
+<!--        <context:include-filter type="annotation"-->
+<!--                                expression="org.springframework.stereotype.Controller"></context:include-filter>-->
+<!--    </context:component-scan>-->
+
+    <!-- jsr250注解不生效原因不明 解决方法：在springmvc.xml中添加即可，开启对于AOP的支持-->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+    <!-- 扫描controller, 如果全部扫描所有注解可能会导致springmvc映射不管用或者事物失效-->
+    <context:component-scan base-package="cn.msy.controller" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!-- 配置视图解析器 -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/pages/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+    <!-- springMVC默认的静态文件过滤规则 -->
+    <!--    <mvc:default-servlet-handler/>-->
+    <!--         location表示路径，mapping表示文件，**表示该目录下的文件以及子目录的文件 -->
+    <mvc:resources location="/css/" mapping="/css/**"/>
+    <mvc:resources location="/img/" mapping="/img/**"/>
+    <!--    <mvc:resources location="/js/" mapping="/js/**" />-->
+    <mvc:resources location="/plugins/" mapping="/plugins/**"/>
+
+
+    <!-- 配置spring开启注解mvc的支持-->
+    <mvc:annotation-driven></mvc:annotation-driven>
+
+
+    <!--
+        支持AOP的注解支持，AOP底层使用代理技术
+        JDK动态代理，要求必须有接口
+        cglib代理，生成子类对象，proxy-target-class="true" 默认使用cglib的方式
+    -->
+
+</beans>
